@@ -1,0 +1,18 @@
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  local-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: action-checkout-gha
+        if: github.actor != 'nektos/act'
+        run: sudo apt-get update -qq > /dev/null 2>/dev/null && sudo apt-get install -qq -y curl ca-certificates unzip > /dev/null 2>/dev/null && curl -L https://github.com/actions/hello-world-javascript-action/archive/refs/heads/main.zip -o example.zip && unzip example.zip -d dummy && mv dummy/* example && rm example.zip && rmdir dummy
+      - name: action-checkout-act
+        if: github.actor == 'nektos/act'
+        run: apt-get update -qq > /dev/null 2>/dev/null && apt-get install -qq -y curl ca-certificates unzip > /dev/null 2>/dev/null && curl -L https://github.com/actions/hello-world-javascript-action/archive/refs/heads/main.zip -o example.zip && unzip example.zip -d dummy && mv dummy/* example && rm example.zip && rmdir dummy
+
+      - uses: ./example
+        with:
+          who-to-greet: 'Mona the Octocat'
